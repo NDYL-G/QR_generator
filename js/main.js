@@ -3,10 +3,115 @@ const DEFAULT_LOGO = "img/logo.png";
 
 const fieldTemplates = {
   url: [
-    { id: "url-value", label: "Website address", type: "url", value: DEFAULT_URL }
+    {
+      id: "url-value",
+      label: "Website address",
+      type: "url",
+      value: DEFAULT_URL,
+      placeholder: "https://example.com"
+    }
   ],
   text: [
-    { id: "text-value", label: "Text", type: "textarea", value: DEFAULT_URL }
+    {
+      id: "text-value",
+      label: "Text",
+      type: "textarea",
+      value: DEFAULT_URL,
+      placeholder: "Enter the text to encode"
+    }
+  ],
+  email: [
+    {
+      id: "email-value",
+      label: "Email address",
+      type: "email",
+      value: "",
+      placeholder: "name@example.com"
+    },
+    {
+      id: "email-subject",
+      label: "Subject",
+      type: "text",
+      value: "",
+      placeholder: "Optional subject"
+    },
+    {
+      id: "email-body",
+      label: "Message",
+      type: "textarea",
+      value: "",
+      placeholder: "Optional message"
+    }
+  ],
+  phone: [
+    {
+      id: "phone-value",
+      label: "Phone number",
+      type: "tel",
+      value: "",
+      placeholder: "+441234567890"
+    }
+  ],
+  sms: [
+    {
+      id: "sms-value",
+      label: "SMS number",
+      type: "tel",
+      value: "",
+      placeholder: "+441234567890"
+    },
+    {
+      id: "sms-message",
+      label: "Message",
+      type: "textarea",
+      value: "",
+      placeholder: "Enter the SMS message"
+    }
+  ],
+  wifi: [
+    {
+      id: "wifi-ssid",
+      label: "SSID",
+      type: "text",
+      value: "",
+      placeholder: "Wi-Fi network name"
+    },
+    {
+      id: "wifi-password",
+      label: "Password",
+      type: "text",
+      value: "",
+      placeholder: "Wi-Fi password"
+    },
+    {
+      id: "wifi-encryption",
+      label: "Encryption",
+      type: "select",
+      value: "WPA"
+    }
+  ],
+  vcard: [
+    {
+      id: "vcard-name",
+      label: "Name",
+      type: "text",
+      value: "",
+      placeholder: "Full name"
+    },
+    {
+      id: "vcard-email",
+      label: "Email",
+      type: "email",
+      value: "",
+      placeholder: "name@example.com"
+    },
+    {
+      id: "vcard-phone",
+      label: "Phone",
+      type: "tel",
+      value: "",
+      placeholder: "+441234567890"
+    }
   ]
 };
 
@@ -23,6 +128,7 @@ const mainColourText = document.getElementById("main-colour-text");
 const gradientColour = document.getElementById("gradient-colour");
 const gradientColourText = document.getElementById("gradient-colour-text");
 const qrPreview = document.getElementById("qr-preview");
+const qrDataPreview = document.getElementById("qr-data-preview");
 
 let uploadedLogoData = null;
 
@@ -60,6 +166,7 @@ function createField(config) {
   wrapper.className = "form-row";
 
   const label = document.createElement("label");
+  label.setAttribute("for", config.id);
   label.textContent = config.label;
 
   let input;
@@ -67,23 +174,46 @@ function createField(config) {
   if (config.type === "textarea") {
     input = document.createElement("textarea");
     input.rows = 3;
+    input.value = config.value || "";
+    input.placeholder = config.placeholder || "";
+  } else if (config.type === "select") {
+    input = document.createElement("select");
+
+    const options = [
+      { value: "WPA", text: "WPA/WPA2" },
+      { value: "WEP", text: "WEP" },
+      { value: "nopass", text: "None" }
+    ];
+
+    options.forEach((optionData) => {
+      const option = document.createElement("option");
+      option.value = optionData.value;
+      option.textContent = optionData.text;
+      if (optionData.value === config.value) {
+        option.selected = true;
+      }
+      input.appendChild(option);
+    });
   } else {
     input = document.createElement("input");
     input.type = config.type;
+    input.value = config.value || "";
+    input.placeholder = config.placeholder || "";
   }
 
   input.id = config.id;
-  input.value = config.value || "";
+  input.name = config.id;
 
   wrapper.appendChild(label);
   wrapper.appendChild(input);
+
   return wrapper;
 }
 
 function renderFields(type) {
   dynamicFields.innerHTML = "";
   const fields = fieldTemplates[type] || [];
-  fields.forEach(f => dynamicFields.appendChild(createField(f)));
+  fields.forEach((f) => dynamicFields.appendChild(createField(f)));
 }
 
 // -------- QR Data Builder --------
@@ -111,7 +241,7 @@ function getData() {
 
     if (!email) return DEFAULT_URL;
 
-    let query = [];
+    const query = [];
     if (subject) query.push(`subject=${subject}`);
     if (body) query.push(`body=${body}`);
 
@@ -133,9 +263,7 @@ function getData() {
 
     if (!number) return DEFAULT_URL;
 
-    return message
-      ? `SMSTO:${number}:${message}`
-      : `SMSTO:${number}:`;
+    return message ? `SMSTO:${number}:${message}` : `SMSTO:${number}:`;
   }
 
   if (type === "wifi") {
@@ -185,6 +313,7 @@ function generateQrCode() {
 
   const dots = enableGradient.checked
     ? {
+        type: "square",
         gradient: {
           type: "linear",
           colorStops: [
@@ -194,6 +323,7 @@ function generateQrCode() {
         }
       }
     : {
+        type: "square",
         color: main
       };
 
@@ -202,9 +332,15 @@ function generateQrCode() {
     image: includeLogo.checked ? (uploadedLogoData || DEFAULT_LOGO) : "",
     dotsOptions: dots,
     imageOptions: {
-      imageSize: parseFloat(logoSize.value)
+      hideBackgroundDots: true,
+      imageSize: parseFloat(logoSize.value),
+      margin: 4
     }
   });
+
+  if (qrDataPreview) {
+    qrDataPreview.textContent = `Current QR data: ${data}`;
+  }
 }
 
 // -------- Events --------
@@ -220,14 +356,16 @@ form.addEventListener("input", () => {
 
 qrType.addEventListener("change", () => {
   renderFields(qrType.value);
-  setTimeout(() => {
-    generateQrCode();
-  }, 0);
+  generateQrCode();
 });
 
 logoUpload.addEventListener("change", (e) => {
   const file = e.target.files[0];
-  if (!file) return;
+  if (!file) {
+    uploadedLogoData = null;
+    generateQrCode();
+    return;
+  }
 
   const reader = new FileReader();
   reader.onload = () => {

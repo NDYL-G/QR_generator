@@ -91,11 +91,13 @@ function getData() {
   const type = qrType.value;
 
   if (type === "url") {
-    return document.getElementById("url-value").value || DEFAULT_URL;
+    const urlField = document.getElementById("url-value");
+    return urlField ? (urlField.value || DEFAULT_URL) : DEFAULT_URL;
   }
 
   if (type === "text") {
-    return document.getElementById("text-value").value || DEFAULT_URL;
+    const textField = document.getElementById("text-value");
+    return textField ? (textField.value || DEFAULT_URL) : DEFAULT_URL;
   }
 
   return DEFAULT_URL;

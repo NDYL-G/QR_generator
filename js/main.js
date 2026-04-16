@@ -343,6 +343,27 @@ function syncColourInputs(colourInput, textInput, fallback) {
   });
 }
 
+function getCornerTypes(selectedCornerStyle) {
+  if (selectedCornerStyle === "dot") {
+    return {
+      squareType: "dot",
+      dotType: "dot"
+    };
+  }
+
+  if (selectedCornerStyle === "extra-rounded") {
+    return {
+      squareType: "extra-rounded",
+      dotType: "square"
+    };
+  }
+
+  return {
+    squareType: "square",
+    dotType: "square"
+  };
+}
+
 function generateQrCode() {
   const data = getData();
   const main = normaliseHex(mainColour.value, "#112557");
@@ -353,6 +374,8 @@ function generateQrCode() {
 
   const selectedCornerStyle =
     document.querySelector('input[name="corner-style"]:checked')?.value || "square";
+
+  const cornerTypes = getCornerTypes(selectedCornerStyle);
 
   const dotsOptions = enableGradient.checked
     ? {
@@ -379,11 +402,11 @@ function generateQrCode() {
     },
     dotsOptions: dotsOptions,
     cornersSquareOptions: {
-      type: selectedCornerStyle,
+      type: cornerTypes.squareType,
       color: main
     },
     cornersDotOptions: {
-      type: selectedCornerStyle,
+      type: cornerTypes.dotType,
       color: main
     },
     imageOptions: {

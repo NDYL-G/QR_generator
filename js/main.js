@@ -1,4 +1,4 @@
-const DEFAULT_URL = "https://QR_generator.ndyl.uk";
+const DEFAULT_URL = "https://qrgenerator.ndyl.uk";
 const DEFAULT_LOGO = "img/logo.png";
 
 const fieldTemplates = {

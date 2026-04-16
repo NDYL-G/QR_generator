@@ -1,50 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QR Code Generator</title>
   <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/navbar.css" />
-  <link rel="stylesheet" href="css/landing.css" />
 </head>
 <body>
-  <!-- Page should be a dynamic webpage using flexbox to separate the main areas -->
-  <!-- Heading central to the page -->
-  <!-- Instructions, top left of page -->
-  <!-- Options, Bottom left of page -->
-  <!-- Option 1 - Drop-down box - URL, Text, email, phone, SMS, Wi-Fi, vCard. This will only display relevant fields to be completed for the user to complete, use URL as default -->
-  <!-- use https://QR_generator.ndyl.uk as the default field -->
-  <!-- Option 2 - Radio button for corner style - square, dot, rounded, use square as default -->
-  <!-- Option 3 - Radio button for dot style - square, dot, rounded, use square as default -->
-  <!-- Option 4 - Slider for Error correction - Low, Medium, Quartile, High, use Low as default -->
-  <!-- Option 5 - Main colour selector with colour picker, use #112557 as default -->
-  <!-- Option 6 - Gradient colour option, selector with colour picker, use #fd9802 as default -->
-  <!-- Option 7 - Upload image, drag and drop or select from folder.  Use logo.png by default, include a radio button to not include a logo -->
-  <!-- Option 8 - Slider to select image size -->
-  <!-- Generate code button below option selection -->
-  <!-- QR Code should be shown on the right of the page in the middle. The QR code should open with the QR code for https://QR_generator.ndyl.uk and the logo.png by default -->
-  
-  <div id="header"></div>
-
-  <main class="landing">
-    <div class="logo-container">
-      <img src="svg/logo.svg" alt="Logo" onerror="this.src='img/logo.png'" class="logo" />
+  <header class="site-header">
+    <div class="branding">
+      <img src="svg/logo.svg" alt="QR Generator logo" onerror="this.src='img/logo.png'" class="site-logo" />
+      <div>
+        <h1>QR Code Generator</h1>
+        <p>Create a styled QR code with your own content, colours and logo.</p>
+      </div>
     </div>
-    <h1>QR Code |Generator</h1>
-    <p>The default QR code is for this website, try it now.</p>
-    <p>1. Select the QR code type from the drop-down list (URL, Text, email, phone, SMS, Wi-Fi, vCard)</p>
-    <p>2. Select the QR Code style</p>
-    <p>3. Select the QR error correction</p>
-    <p>4. Select the colours for the QR Code
-    <p>5. Option: add an image</p>
-    <p>6. Select the image size (limited by error correction)</p>
-    <p>7. Press the 'Generate QR Code' button</p>
+  </header>
 
+  <main class="page-layout">
+    <section class="left-panel">
+      <section class="instructions-panel">
+        <h2>How it works</h2>
+        <ol>
+          <li>Select the QR code type.</li>
+          <li>Enter the required details.</li>
+          <li>Choose the QR code style and error correction.</li>
+          <li>Adjust the main colour and gradient colour.</li>
+          <li>Choose whether to include a logo.</li>
+          <li>Adjust the logo size if needed.</li>
+          <li>Press <strong>Generate QR Code</strong>.</li>
+        </ol>
+      </section>
+
+      <section class="controls-panel">
+        <h2>QR code options</h2>
+
+        <form id="qr-form" novalidate>
+          <div class="form-row">
+            <label for="qr-type">QR code type</label>
+            <select id="qr-type" name="qr-type">
+              <option value="url" selected>URL</option>
+              <option value="text">Text</option>
+              <option value="email">Email</option>
+              <option value="phone">Phone</option>
+              <option value="sms">SMS</option>
+              <option value="wifi">Wi-Fi</option>
+              <option value="vcard">vCard</option>
+            </select>
+          </div>
+
+          <div id="dynamic-fields" class="dynamic-fields"></div>
+
+          <fieldset class="option-group">
+            <legend>Corner style</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="corner-style" value="square" checked /> Square</label>
+              <label><input type="radio" name="corner-style" value="dot" /> Dot</label>
+              <label><input type="radio" name="corner-style" value="extra-rounded" /> Rounded</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="option-group">
+            <legend>Dot style</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="dot-style" value="square" checked /> Square</label>
+              <label><input type="radio" name="dot-style" value="dots" /> Dot</label>
+              <label><input type="radio" name="dot-style" value="rounded" /> Rounded</label>
+            </div>
+          </fieldset>
+
+          <div class="form-row">
+            <label for="error-correction">Error correction</label>
+            <select id="error-correction" name="error-correction">
+              <option value="L">Low</option>
+              <option value="M">Medium</option>
+              <option value="Q">Quartile</option>
+              <option value="H" selected>High</option>
+            </select>
+          </div>
+
+          <div class="form-row colour-row">
+            <label for="main-colour">Main colour</label>
+            <div class="colour-input-wrap">
+              <input type="color" id="main-colour" name="main-colour" value="#112557" />
+              <input type="text" id="main-colour-text" value="#112557" maxlength="7" />
+            </div>
+          </div>
+
+          <div class="form-row checkbox-row">
+            <label for="enable-gradient">Enable gradient</label>
+            <input type="checkbox" id="enable-gradient" name="enable-gradient" checked />
+          </div>
+
+          <div class="form-row colour-row">
+            <label for="gradient-colour">Gradient colour</label>
+            <div class="colour-input-wrap">
+              <input type="color" id="gradient-colour" name="gradient-colour" value="#fd9802" />
+              <input type="text" id="gradient-colour-text" value="#fd9802" maxlength="7" />
+            </div>
+          </div>
+
+          <div class="form-row checkbox-row">
+            <label for="include-logo">Include logo</label>
+            <input type="checkbox" id="include-logo" name="include-logo" checked />
+          </div>
+
+          <div class="form-row">
+            <label for="logo-upload">Upload logo</label>
+            <input type="file" id="logo-upload" name="logo-upload" accept="image/*" />
+            <small>Leave this empty to use the default <code>img/logo.png</code>.</small>
+          </div>
+
+          <div class="form-row">
+            <label for="logo-size">Logo size <span id="logo-size-value">0.35</span></label>
+            <input type="range" id="logo-size" name="logo-size" min="0.15" max="0.50" step="0.01" value="0.35" />
+          </div>
+
+          <div class="button-row">
+            <button type="submit" class="primary-button">Generate QR Code</button>
+          </div>
+        </form>
+      </section>
+    </section>
+
+    <section class="right-panel">
+      <div class="preview-card">
+        <h2>Preview</h2>
+        <p class="preview-note">The default QR code points to this website so you can test it straight away.</p>
+        <div id="qr-preview" class="qr-preview" aria-live="polite"></div>
+        <p id="qr-data-preview" class="qr-data-preview"></p>
+      </div>
+    </section>
   </main>
 
-  <div id="footer"></div>
-  <script src="js/header-footer-loader.js"></script>
+  <script src="https://unpkg.com/qr-code-styling@1.9.2/lib/qr-code-styling.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

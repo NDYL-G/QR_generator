@@ -408,6 +408,13 @@ input[type="checkbox"] {
   transform: translateY(-1px);
 }
 
+input.is-disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  border-color: var(--border);
+  cursor: not-allowed;
+}
+
 /* Links */
 a {
   color: var(--brand-accent);
